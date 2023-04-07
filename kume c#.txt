@@ -1,0 +1,59 @@
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.Write("Dizinin eleman sayısı: ");
+        int n = int.Parse(Console.ReadLine());
+        int[] arr = new int[n];
+
+        // Dizinin elemanlarını kullanıcıdan al
+        for (int i = 0; i < n; i++)
+        {
+            Console.Write("Dizinin {0}. elemanını girin: ", i + 1);
+            arr[i] = int.Parse(Console.ReadLine());
+        }
+
+        // Dizinin elemanlarının toplamını alarak ikiye bölünebilirlik kontrolü yap
+        int toplam = 0;
+        foreach (int sayi in arr)
+        {
+            toplam += sayi;
+        }
+
+        if (toplam % 2 != 0)
+        {
+            Console.WriteLine("Dizi ikiye bölünemez");
+            return;
+        }
+
+        // İki alt küme toplamlarının eşitliğini kontrol et
+        bool[,] dp = new bool[n + 1, toplam / 2 + 1];
+        for (int i = 0; i <= n; i++)
+        {
+            dp[i, 0] = true;
+        }
+
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= toplam / 2; j++)
+            {
+                dp[i, j] = dp[i - 1, j];
+                if (j >= arr[i - 1])
+                {
+                    dp[i, j] |= dp[i - 1, j - arr[i - 1]];
+                }
+            }
+        }
+
+        if (dp[n, toplam / 2])
+        {
+            Console.WriteLine("Dizi iki alt küme olarak bölünebilir.");
+        }
+        else
+        {
+            Console.WriteLine("Dizi iki alt küme olarak bölünemez.");
+        }
+    }
+}
